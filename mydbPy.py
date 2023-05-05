@@ -11,7 +11,7 @@ try:
     cursor = connection.cursor()
     #creiamo tabella
     create_table_query = '''CREATE TABLE mobile
-              (ID INT PRIMARY KEY     NOT NULL,
+              (ID SERIAL PRIMARY KEY     NOT NULL,
               MODEL           TEXT    NOT NULL,
               PRICE         REAL); '''
     cursor.execute(create_table_query)
