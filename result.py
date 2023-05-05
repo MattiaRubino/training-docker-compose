@@ -1,32 +1,39 @@
 import psycopg2
 from psycopg2 import Error
+f = None
 
 try:
-    # Connect to an existing database
+  f = open("cities.csv")
+  lines =f.read().splitlines()
+  lines=lines[1:len(lines)-2]
+  elements=[]
+  i=1
+  for line in lines:
+     dato=line.split(",")
+     cities=(i,dato[0], dato[1],dato[2],dato[3], dato[4], dato[5],dato[6],dato[7],dato[8],dato[9])
+     elements.append(cities)
+     i+=1
+
+except Exception as e:
+        print(e)
+finally:
+    if f is not None:
+       f.close()
+
+try:
     connection = psycopg2.connect(user="unicorn_user",
                                   password="magical_password",
                                   host="127.0.0.1",
                                   port="5433",
                                   database="training")
-    cursor = connection.cursor()
-    #creiamo tabella
-    create_table_query = '''CREATE TABLE mobile
-              (ID SERIAL PRIMARY KEY     NOT NULL,
-              MODEL           TEXT    NOT NULL,
-              PRICE         REAL); '''
-    cursor.execute(create_table_query)
-    connection.commit()
 
-    #inseriamo dati
-    insert_query = """ INSERT INTO mobile (ID, MODEL, PRICE) VALUES (1, 'Samsung', 555)"""
-    cursor.execute(insert_query)
-    connection.commit()
-    #visualiziamo con SELECT
-    cursor.execute("SELECT * from mobile")
+    cursor = connection.cursor()
+    insert_query = "INSERT INTO città (ID ,LatD, LatM,LatS,NS,LonD,LonM,LonS,EW,City,State)  VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    cursor.executemany(insert_query, elements)
+    db.commit()
+    cursor.execute("SELECT * from città")
     record = cursor.fetchall()
     print("Result ", record)
-
-
 
 
 except (Exception, Error) as error:
